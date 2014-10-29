@@ -1,0 +1,8 @@
+en:
+  active_admin:
+    extensions:
+      controller:
+        flash_messages:
+          create: '%{resource} created'
+          update: '%{resource} updated'
+          destroy: '%{resource} destroyed'

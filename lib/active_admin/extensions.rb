@@ -7,5 +7,7 @@ require 'active_admin/extensions/controller/public_resources'
 
 module ActiveAdmin
   module Extensions
+    class Engine < ::Rails::Engine #:nodoc:
+    end
   end
 end
