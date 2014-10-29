@@ -13,7 +13,7 @@ module ActiveAdmin
         [:create, :update, :destroy].each do |action|
           define_method(action) do |&block|
             super() do |success, failure|
-              block.call(success, failure)
+              block.call(success, failure) unless block.nil?
 
               action_redirect = redirect_after_action[action_name.to_sym]
 
