@@ -20,37 +20,55 @@ module ActiveAdmin
       module RedirectAfterActionTo
         extend ActiveSupport::Concern
 
-        module ClassMethods
+        [:create, :update, :destroy].each do |action|
+          define_method(action) do |&block|
+            super() do |success, failure|
+              block.call(success, failure)
 
-          def redirect_after_action_to(actions:, path:, keep_flash: true)
-            controller do
+              action_redirect = redirect_after_action[action_name.to_sym]
 
-              unless actions.respond_to? :each
-                actions = [actions]
-              end
+              unless action_redirect.nil?
+                success.html do
+                  keep_flash = action_redirect[:keep_flash]
+                  path       = action_redirect[:path]
 
-              actions.each do |action|
-                parsed_action = if action.try(:lambda?)
-                  action.call.to_sym
-                else
-                  action.to_sym
-                end
-
-                define_method(parsed_action) do |&block|
-                  super() do |success, failure|
-                    block.call(success, failure)
-                    success.html do
-                      flash.keep if keep_flash
-                      redirect_to if path.try(:lambda?)
-                        path.call(self).to_s
-                      else
-                        path.to_s
-                      end
-                    end
+                  flash.keep if keep_flash
+                  redirect_to if path.try(:lambda?)
+                    path.call(self).to_s
+                  else
+                    path.to_s
                   end
                 end
               end
+            end
+          end
+        end
 
+        def redirect_after_action
+          @@redirect_after_action = {} unless defined? @@redirect_after_action
+          @@redirect_after_action
+        end
+
+        module ClassMethods
+
+          def redirect_after_action_to(actions:, path:, keep_flash: true)
+            @@redirect_after_action
+
+            unless actions.respond_to? :each
+              actions = [actions]
+            end
+
+            actions.each do |action|
+              parsed_action = if action.try(:lambda?)
+                action.call.to_sym
+              else
+                action.to_sym
+              end
+
+              @@redirect_after_action[parsed_action] = {
+                path: path,
+                keep_flash: keep_flash
+              }
             end
 
           end
@@ -61,9 +79,9 @@ module ActiveAdmin
             keep_flash: true
           )
             redirect_after_action_to(
-              actions: action_or_actions,
+              actions: actions,
               path: ->(controller) {
-                controller.send(url_method, controller.send(:resource))
+                controller.send(url_helper, controller.send(:resource))
               },
               keep_flash: keep_flash
             )
@@ -78,5 +96,3 @@ module ActiveAdmin
   end
 
 end
-
-::ActiveAdmin::DSL.send(:include, ActiveAdmin::Extensions::DSL::RedirectActionTo)
