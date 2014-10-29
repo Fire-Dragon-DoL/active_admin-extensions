@@ -1,5 +1,6 @@
 require 'active_support/concern'
 require 'active_admin/extensions/controller/action_status'
+require 'active_admin/extensions/controller/public_resources'
 
 module ActiveAdmin
 
@@ -9,6 +10,7 @@ module ActiveAdmin
 
       module RedirectAfterActionTo
         extend ActiveSupport::Concern
+        include PublicResources
 
         [:create, :update, :destroy].each do |action|
           define_method(action) do |&block|
@@ -36,15 +38,16 @@ module ActiveAdmin
         end
 
         def redirect_after_action
-          @@redirect_after_action = {} unless defined? @@redirect_after_action
-          @@redirect_after_action
+          self.class.redirect_after_action
         end
 
         module ClassMethods
 
-          def redirect_after_action_to(actions:, path:, keep_flash: true)
-            @@redirect_after_action = {} unless defined? @@redirect_after_action
+          def redirect_after_action
+            @redirect_after_action ||= {}
+          end
 
+          def redirect_after_action_to(actions:, path:, keep_flash: true)
             unless actions.respond_to? :each
               actions = [actions]
             end
@@ -56,7 +59,7 @@ module ActiveAdmin
                 action.to_sym
               end
 
-              @@redirect_after_action[parsed_action] = {
+              redirect_after_action[parsed_action] = {
                 path: path,
                 keep_flash: keep_flash
               }
