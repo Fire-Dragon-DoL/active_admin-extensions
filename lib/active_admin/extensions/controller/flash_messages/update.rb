@@ -13,9 +13,11 @@ module ActiveAdmin
 
           def update
             super() do |success, failure|
-              flash.notice = I18n.t(
-                'active_admin.extensions.controller.flash_messages.update'
-              ) if action_successful?
+              if action_successful?
+                flash.notice = I18n.t(
+                  'active_admin.extensions.controller.flash_messages.update'
+                )
+              end
               yield(success, failure) if block_given?
             end
           end

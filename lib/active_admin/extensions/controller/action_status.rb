@@ -9,7 +9,9 @@ module ActiveAdmin
         [:create, :update, :destroy].each do |parsed_action|
           define_method(parsed_action) do |&block|
             super() do |success, failure|
-              @action_successful = failure.class != InheritedResources::BlankSlate
+              @action_successful = failure.instance_of?(
+                InheritedResources::BlankSlate
+              ) || failure.class.nil?
               block.call(success, failure) unless block.nil?
             end
           end
