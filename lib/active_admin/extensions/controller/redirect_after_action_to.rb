@@ -43,7 +43,7 @@ module ActiveAdmin
         module ClassMethods
 
           def redirect_after_action_to(actions:, path:, keep_flash: true)
-            @@redirect_after_action
+            @@redirect_after_action = {} unless defined? @@redirect_after_action
 
             unless actions.respond_to? :each
               actions = [actions]
