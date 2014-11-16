@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["francesco.belladonna@gmail.com"]
   spec.summary       = %q{Collection of extensions for ActiveAdmin}
   spec.description   = %q{Collection of extensions for ActiveAdmin}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/Fire-Dragon-DoL/active_admin-extensions"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
