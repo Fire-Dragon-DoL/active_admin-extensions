@@ -18,7 +18,24 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+The following modules are available:
+- `PublicResources`
+- `ActionStatus`
+- `FlashMessages`
+- `RedirectAfterActionTo`
+
+And they can be easily used in this way:
+
+```ruby
+  controller do
+    include ActiveAdmin::Extensions::Controller::PublicResources
+    include ActiveAdmin::Extensions::Controller::ActionStatus
+    include ActiveAdmin::Extensions::Controller::FlashMessages
+    include ActiveAdmin::Extensions::Controller::RedirectAfterActionTo
+  end
+```
+
+**TODO:** Add usage instructions for each module
 
 ## Contributing
 
